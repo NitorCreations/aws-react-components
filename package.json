@@ -1,0 +1,30 @@
+{
+  "name": "aws-react-components",
+  "version": "0.1.0",
+  "description": "A library with React component for AWS",
+  "main": "build/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "echo Not yet done"
+  },
+  "keywords": [
+    "nitor",
+    "react",
+    "aws"
+  ],
+  "author": "Richard Weber <richard.weber@nitor.fi>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/NitorCreations/aws-react-components.git"
+  },
+  "dependencies": {
+    "@types/node": "^8.0.28",
+    "@types/react": "^16.0.5",
+    "@types/react-dom": "^15.5.4",
+    "amazon-cognito-identity-js": "^1.19.0",
+    "aws-sdk": "^2.6.0",
+    "react": "^15.6.1",
+    "react-dom": "^15.6.1"
+  }
+}
