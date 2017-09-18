@@ -1,5 +1,5 @@
 {
-  "name": "aws-react-components",
+  "name": "@nitor/aws-react-components",
   "version": "0.1.0",
   "description": "A library with React component for AWS",
   "main": "build/index.js",
@@ -16,7 +16,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/NitorCreations/aws-react-components.git"
+    "url": "git+https://github.com/NitorCreations/aws-react-components.git"
   },
   "dependencies": {
     "@types/node": "^8.0.28",
@@ -26,5 +26,10 @@
     "aws-sdk": "^2.6.0",
     "react": "^15.6.1",
     "react-dom": "^15.6.1"
-  }
+  },
+  "bugs": {
+    "url": "https://github.com/NitorCreations/aws-react-components/issues"
+  },
+  "homepage": "https://github.com/NitorCreations/aws-react-components#readme",
+  "devDependencies": {}
 }

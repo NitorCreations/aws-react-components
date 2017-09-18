@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {LoginForm} from './LoginForm';
 
-namespace DefaultLoginForm {
+export namespace DefaultLoginForm {
     export interface State {
         username : string,
         password : string;
