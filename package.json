@@ -3,8 +3,9 @@
   "version": "0.1.0",
   "description": "A library with React component for AWS",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
-    "build": "tsc --declaration"
+    "prepublishOnly": "tsc"
   },
   "keywords": [
     "nitor",
