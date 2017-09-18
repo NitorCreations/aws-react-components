@@ -9,7 +9,6 @@
     "jsx": "react",
     "moduleResolution": "node",
     "rootDir": "src",
-    "experimentalDecorators": true,
     "forceConsistentCasingInFileNames": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,

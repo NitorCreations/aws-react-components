@@ -1,9 +1,9 @@
 {
   "name": "@nitor/aws-react-components",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "A library with React component for AWS",
   "main": "build/index.js",
-  "types": "build/index.d.ts",
+  "typings": "build/index",
   "scripts": {
     "prepublishOnly": "tsc"
   },
