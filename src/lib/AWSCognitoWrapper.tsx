@@ -3,6 +3,8 @@ import * as AWS from 'aws-sdk';
 import {CognitoUser, CognitoUserAttribute, AuthenticationDetails, CognitoUserPool} from 'amazon-cognito-identity-js';
 import {LoginForm} from './LoginForm';
 import {DefaultLoginForm} from './DefaultLoginForm';
+import {ResetPasswordForm} from './ResetPasswordForm';
+import {DefaultResetPasswordForm} from './DefaultResetPasswordForm';
 
 export namespace AWSCognitoWrapper {
     export interface Props {
@@ -12,20 +14,34 @@ export namespace AWSCognitoWrapper {
         awsClientId : string;
 
         overrideLoginForm?: LoginForm <LoginForm.Props, any>;
+        overrideResetPassword?: ResetPasswordForm<ResetPasswordForm.Props, any>;
 
         returnAccessToken?: (token : string) => void;
         returnAttributes?: (attributes : CognitoUserAttribute[]) => void;
 
     }
+
+    export interface State {
+        // These are for forced password change
+        requiredPasswordChange: boolean,
+        error?: string,
+        userAttributes?: CognitoUserAttribute[],
+        self?: any,
+        cognitoUser?: CognitoUser
+    }
 }
 
-export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props, {} > {
+export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props, AWSCognitoWrapper.State > {
 
     private userPool: CognitoUserPool;
 
     constructor(props : AWSCognitoWrapper.Props) {
         super(props);
 
+        this.state = {
+            requiredPasswordChange: false
+        };
+        
         AWS.config.region = props.awsRegion;
 
         let poolData = {
@@ -43,6 +59,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         this.getSessionData = this
             .getSessionData
             .bind(this);
+        this.submitForcedNewPassword = this.submitForcedNewPassword.bind(this);
+
 
     }
 
@@ -121,36 +139,63 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                 }
 
                 self.getSessionData();
+
+                self.setState({
+                    requiredPasswordChange: false
+            });
+
             },
 
             onFailure: function (err) {
-                alert(err);
+                self.setState({
+                    error: err.message
+                });
             },
 
             newPasswordRequired: function (userAttributes, requiredAttributes) {
-                let newPassword = prompt("Enter new password");
-
-                if (newPassword === null) {
-                    alert("You should have entered a new password...");
-                    return;
-                }
-
-                // the api doesn't accept this field back
+                // the api doesn't accept these fields back
                 delete userAttributes.email_verified;
+                delete userAttributes.phone_number_verified;
 
-                cognitoUser.completeNewPasswordChallenge(newPassword, userAttributes, this);
-
+                self.setState({
+                    requiredPasswordChange: true,
+                    cognitoUser: cognitoUser,
+                    userAttributes: userAttributes,
+                    self: this
+                });
             }
 
         });
     }
 
+    submitForcedNewPassword(newPassword: string) {
+        if(this.state.cognitoUser) {
+            this.state.cognitoUser.
+                completeNewPasswordChallenge(newPassword, 
+                    this.state.userAttributes, 
+                    this.state.self);
+
+        } else {
+            alert("Something went badly wrong!")
+        }
+        
+    }
+
     render() {
-        let LoginFormType : any = this.props.overrideLoginForm
-            ? this.props.overrideLoginForm
-            : DefaultLoginForm;
+
+
+        if (this.state.requiredPasswordChange) {
+            let ResetPasswordType: any = this.props.overrideResetPassword ? this.props.overrideResetPassword : DefaultResetPasswordForm;
+            return (
+                <ResetPasswordType returnNewPassword={this.submitForcedNewPassword} error={this.state.error} />
+            );
+        }
 
         if (AWS.config.credentials === null) {
+            let LoginFormType : any = this.props.overrideLoginForm
+                ? this.props.overrideLoginForm
+                : DefaultLoginForm;
+
             return (<LoginFormType loginHandler={this.loginHandler}/>);
         }
 
