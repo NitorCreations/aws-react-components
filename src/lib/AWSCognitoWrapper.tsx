@@ -52,15 +52,9 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         };
         this.userPool = new CognitoUserPool(poolData);
 
-        this.loginHandler = this
-            .loginHandler
-            .bind(this);
-        this.setAwsCredentials = this
-            .setAwsCredentials
-            .bind(this);
-        this.getSessionData = this
-            .getSessionData
-            .bind(this);
+        this.loginHandler = this.loginHandler.bind(this);
+        this.setAwsCredentials = this.setAwsCredentials.bind(this);
+        this.getSessionData = this.getSessionData.bind(this);
         this.submitForcedNewPassword = this.submitForcedNewPassword.bind(this);
 
 
@@ -71,6 +65,21 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         loginObject['cognito-idp.' + this.props.awsRegion + '.amazonaws.com/' + this.props.awsUserPoolId] = token;
 
         AWS.config.credentials = new AWS.CognitoIdentityCredentials({IdentityPoolId: this.props.awsIdentityPoolId, Logins: loginObject});
+
+        let creds = AWS.config.credentials as AWS.Credentials;
+
+        if(creds.needsRefresh()) {
+            creds.refresh((error) => {
+                if (error) {
+                    console.error(error);
+                } else {
+                    console.log('Successfully logged!');
+                }
+            });
+        }
+
+        
+
     }
 
     componentDidMount() {
@@ -104,16 +113,20 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                             if (err || typeof attributes === "undefined") {
                                 alert(err);
                                 return;
-                            } else if (self.props.returnAttributes) {
-                                self
-                                    .props
-                                    .returnAttributes(attributes);
+                            } else {
+                                if (self.props.returnAttributes) {
+                                    self
+                                        .props
+                                        .returnAttributes(attributes);
+                                }
+
+                                self.setState({
+                                    awsUserAttributes: attributes
+                                });
                             }
-                            self.setState({
-                                awsUserAttributes: attributes
-                            });
+                            
                         });
-                    }
+                    }                    
                 }
             });
         }
