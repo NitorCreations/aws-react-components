@@ -1,6 +1,6 @@
 {
   "name": "@nitor/aws-react-components",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "A library with React component for AWS",
   "main": "build/index.js",
   "typings": "build/index",

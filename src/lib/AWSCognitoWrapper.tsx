@@ -221,7 +221,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
             (child, index) => {
                 if(React.isValidElement(child)) {
                     return React.cloneElement(child as React.ReactElement<any>, {
-                        awsUserAttributes: self.state.awsUserAttributes
+                        awsUserAttributes: self.state.awsUserAttributes,
+                        AWS: AWS
                     });
                 }
                 return;
