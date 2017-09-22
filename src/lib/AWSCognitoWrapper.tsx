@@ -7,7 +7,7 @@ import {ResetPasswordForm} from './ResetPasswordForm';
 import {DefaultResetPasswordForm} from './DefaultResetPasswordForm';
 
 export namespace AWSCognitoWrapper {
-    export interface Props {
+    export interface Props extends React.Props<AWSCognitoWrapper> {
         awsRegion : string;
         awsUserPoolId : string;
         awsIdentityPoolId : string;
@@ -27,7 +27,9 @@ export namespace AWSCognitoWrapper {
         error?: string,
         userAttributes?: CognitoUserAttribute[],
         self?: any,
-        cognitoUser?: CognitoUser
+        cognitoUser?: CognitoUser,
+        // This is passed to children
+        awsUserAttributes?: CognitoUserAttribute[]
     }
 }
 
@@ -97,18 +99,20 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                             .returnAccessToken(session.getIdToken().getJwtToken());
                     }
 
-                    if (self.props.returnAttributes) {
-                        if (cognitoUser !== null) {
-                            cognitoUser.getUserAttributes((err, attributes) => {
-                                if (err || typeof attributes === "undefined") {
-                                    alert(err);
-                                } else if (self.props.returnAttributes) {
-                                    self
-                                        .props
-                                        .returnAttributes(attributes);
-                                }
+                    if (cognitoUser !== null) {
+                        cognitoUser.getUserAttributes((err, attributes) => {
+                            if (err || typeof attributes === "undefined") {
+                                alert(err);
+                                return;
+                            } else if (self.props.returnAttributes) {
+                                self
+                                    .props
+                                    .returnAttributes(attributes);
+                            }
+                            self.setState({
+                                awsUserAttributes: attributes
                             });
-                        }
+                        });
                     }
                 }
             });
@@ -176,7 +180,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                     this.state.self);
 
         } else {
-            alert("Something went badly wrong!")
+            alert("Something went badly wrong!");
         }
         
     }
@@ -199,9 +203,21 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
             return (<LoginFormType loginHandler={this.loginHandler}/>);
         }
 
+        let self = this;
+        const childrenWithProps = React.Children.map(this.props.children, 
+            (child, index) => {
+                if(React.isValidElement(child)) {
+                    return React.cloneElement(child as React.ReactElement<any>, {
+                        awsUserAttributes: self.state.awsUserAttributes
+                    });
+                }
+                return;
+            }
+        );
+
         return (
             <div>
-                {this.props.children}
+                {childrenWithProps}
             </div>
         );
     }
