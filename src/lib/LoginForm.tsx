@@ -3,6 +3,7 @@ import { Component } from 'react';
 export namespace LoginForm {
     export interface Props {
         loginHandler: (username: string, password: string) => void;
+        error?: string;
     }
 }
 

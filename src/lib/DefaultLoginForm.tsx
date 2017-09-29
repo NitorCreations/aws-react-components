@@ -8,6 +8,16 @@ export namespace DefaultLoginForm {
     }
 }
 
+const ErrorMessage = ({error}: {error?: string}) => {
+    if(!error) {
+        return null;
+    }
+
+    return (
+        <p>{error}</p>
+    )
+}
+
 export class DefaultLoginForm extends LoginForm <LoginForm.Props, DefaultLoginForm.State> {
 
     constructor() {
@@ -46,21 +56,24 @@ export class DefaultLoginForm extends LoginForm <LoginForm.Props, DefaultLoginFo
 
     render() {
         return (
-            <form onSubmit={this.handleSubmit}>
-                <input
-                    type="text"
-                    value={this.state.username}
-                    name="username"
-                    placeholder="Username"
-                    onChange={this.handleUsername}/>
-                <input
-                    type="password"
-                    value={this.state.password}
-                    name="password"
-                    placeholder="Password"
-                    onChange={this.handlePassword}/>
-                <input type="submit"/>
-            </form>
+            <div>
+                <ErrorMessage error={this.props.error} />
+                <form onSubmit={this.handleSubmit}>
+                    <input
+                        type="text"
+                        value={this.state.username}
+                        name="username"
+                        placeholder="Username"
+                        onChange={this.handleUsername}/>
+                    <input
+                        type="password"
+                        value={this.state.password}
+                        name="password"
+                        placeholder="Password"
+                        onChange={this.handlePassword}/>
+                    <input type="submit"/>
+                </form>
+            </div>
         );
     }
 }

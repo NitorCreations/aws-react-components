@@ -213,7 +213,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                 ? this.props.overrideLoginForm
                 : DefaultLoginForm;
 
-            return (<LoginFormType loginHandler={this.loginHandler}/>);
+            return (<LoginFormType loginHandler={this.loginHandler} error={this.state.error}/>);
         }
 
         let self = this;
