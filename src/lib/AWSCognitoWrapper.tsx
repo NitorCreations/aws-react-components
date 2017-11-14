@@ -43,7 +43,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         this.state = {
             requiredPasswordChange: false
         };
-        
+
         AWS.config.region = props.awsRegion;
 
         let poolData = {
@@ -77,9 +77,6 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                 }
             });
         }
-
-        
-
     }
 
     componentDidMount() {
@@ -124,9 +121,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                                     awsUserAttributes: attributes
                                 });
                             }
-                            
                         });
-                    }                    
+                    }
                 }
             });
         }
@@ -195,7 +191,6 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         } else {
             alert("Something went badly wrong!");
         }
-        
     }
 
     render() {

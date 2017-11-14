@@ -13,6 +13,7 @@ export namespace DefaultResetPasswordForm {
     export interface State {
         password1: string;
         password2: string;
+        error: string|null;
     }
 }
 
@@ -23,6 +24,7 @@ export class DefaultResetPasswordForm extends ResetPasswordForm<ResetPasswordFor
         this.state = {
             password1: "",
             password2: "",
+            error: null
         }
 
         this.handlePassword1 = this.handlePassword1.bind(this);
@@ -40,6 +42,16 @@ export class DefaultResetPasswordForm extends ResetPasswordForm<ResetPasswordFor
 
     handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+
+        if(this.state.password1 != this.state.password2) {
+            this.setState({error: "Passwords do not match"});
+            return;
+        }
+        if(this.state.password1.length < 1) {
+            this.setState({error: "Password must not be empty"});
+            return;
+        }
+
         this.props.returnNewPassword(this.state.password1);
     }
 
@@ -47,6 +59,7 @@ export class DefaultResetPasswordForm extends ResetPasswordForm<ResetPasswordFor
         return (
             <div>
                 {this.props.error && <ErrorMessage message={this.props.error} />}
+                {this.state.error && <ErrorMessage message={this.state.error} />}
 
                 <h4>Please enter a new password</h4>
                 <form onSubmit={this.handleSubmit}>
