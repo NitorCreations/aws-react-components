@@ -37,8 +37,35 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
 
     private userPool: CognitoUserPool;
 
+
+    private checkForPropsAndWarn(props: AWSCognitoWrapper.Props): void {
+        let propsToCheck = [
+            "awsRegion",
+            "awsUserPoolId",
+            "awsClientId",
+            "awsIdentityPoolId"
+        ];
+
+        let missingProps: string[] = [];
+
+        propsToCheck.forEach(propName => {
+            let prop = props[propName];
+            if(prop === null || typeof prop === "undefined"){
+                missingProps.push(propName);
+            }
+        });
+
+        if(missingProps.length > 0) {
+            missingProps.forEach(propName => {
+                console.error("ERROR: Property '" + propName + "' not passed to AWSCognitoWrapper, it will not work as expected.");
+            });
+        }
+    }
+
     constructor(props : AWSCognitoWrapper.Props) {
         super(props);
+
+        this.checkForPropsAndWarn(props);
 
         this.state = {
             requiredPasswordChange: false
@@ -71,6 +98,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         if(creds.needsRefresh()) {
             creds.refresh((error) => {
                 if (error) {
+                    this.setState({error: error.message});
                     console.error(error);
                 } else {
                     console.log('Successfully logged!');
@@ -93,7 +121,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
         if (cognitoUser !== null) {
             cognitoUser.getSession((err : any, session : any) => {
                 if (err !== null) {
-                    alert(err);
+                    this.setState({error: err})
+                    return;
                 }
                 if (session.isValid()) {
 
@@ -108,8 +137,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                     if (cognitoUser !== null) {
                         cognitoUser.getUserAttributes((err, attributes) => {
                             if (err || typeof attributes === "undefined") {
-                                alert(err);
-                                return;
+                                console.log(err);
+                                self.setState({error: "Fetching user attributes failed."});
                             } else {
                                 if (self.props.returnAttributes) {
                                     self
@@ -189,7 +218,8 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                     this.state.self);
 
         } else {
-            alert("Something went badly wrong!");
+            this.setState({error: "System error when submitting new password."});
+            console.log("cognitoUser is not valid in component state.");
         }
     }
 
