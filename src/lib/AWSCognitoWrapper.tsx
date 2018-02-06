@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as AWS from 'aws-sdk';
-import {CognitoUser, CognitoUserAttribute, AuthenticationDetails, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {
+    CognitoUser, CognitoUserAttribute, AuthenticationDetails, CognitoUserPool,
+    CognitoUserSession
+} from 'amazon-cognito-identity-js'
 import {LoginForm} from './LoginForm';
 import {DefaultLoginForm} from './DefaultLoginForm';
 import {ResetPasswordForm} from './ResetPasswordForm';
@@ -18,7 +21,7 @@ export namespace AWSCognitoWrapper {
 
         returnAccessToken?: (token : string) => void;
         returnAttributes?: (attributes : CognitoUserAttribute[]) => void;
-
+        returnUserSession?: (session: CognitoUserSession) => void;
     }
 
     export interface State {
@@ -132,6 +135,12 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                         self
                             .props
                             .returnAccessToken(session.getIdToken().getJwtToken());
+                    }
+
+                    if (self.props.returnUserSession) {
+                        self
+                            .props
+                            .returnUserSession(session);
                     }
 
                     if (cognitoUser !== null) {
