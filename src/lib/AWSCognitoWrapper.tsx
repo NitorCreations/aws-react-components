@@ -22,6 +22,7 @@ export namespace AWSCognitoWrapper {
         returnAccessToken?: (token : string) => void;
         returnAttributes?: (attributes : CognitoUserAttribute[]) => void;
         returnUserSession?: (session: CognitoUserSession) => void;
+        returnUser?: (session: CognitoUser) => void;
     }
 
     export interface State {
@@ -117,7 +118,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
     getSessionData() {
         let cognitoUser = this
             .userPool
-            .getCurrentUser();
+            .getCurrentUser() as CognitoUser;
 
         let self = this;
 
@@ -130,6 +131,12 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
                 if (session.isValid()) {
 
                     self.setAwsCredentials(session.getIdToken().getJwtToken());
+
+                    if (self.props.returnUser) {
+                        self
+                            .props
+                            .returnUser(cognitoUser);
+                    }
 
                     if (self.props.returnAccessToken) {
                         self
