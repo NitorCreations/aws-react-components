@@ -17,7 +17,8 @@ overrideResetPassword?: ResetPasswordForm<ResetPasswordForm.Props, any>
 
 returnAccessToken?: (token: string) => void
 returnAttributes?: (attributes: CognituUserAttribute[]) => void
-
+returnUserSession?: (session: CognitoUserSession) => void
+returnUser?: (user: CognitoUser) => void
 ```
 
 ## Props passed to children

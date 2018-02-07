@@ -1,6 +1,9 @@
 import * as React from 'react';
 import * as AWS from 'aws-sdk';
-import {CognitoUser, CognitoUserAttribute, AuthenticationDetails, CognitoUserPool} from 'amazon-cognito-identity-js';
+import {
+    CognitoUser, CognitoUserAttribute, AuthenticationDetails, CognitoUserPool,
+    CognitoUserSession
+} from 'amazon-cognito-identity-js'
 import {LoginForm} from './LoginForm';
 import {DefaultLoginForm} from './DefaultLoginForm';
 import {ResetPasswordForm} from './ResetPasswordForm';
@@ -18,7 +21,8 @@ export namespace AWSCognitoWrapper {
 
         returnAccessToken?: (token : string) => void;
         returnAttributes?: (attributes : CognitoUserAttribute[]) => void;
-
+        returnUserSession?: (session: CognitoUserSession) => void;
+        returnUser?: (session: CognitoUser) => void;
     }
 
     export interface State {
@@ -114,7 +118,7 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
     getSessionData() {
         let cognitoUser = this
             .userPool
-            .getCurrentUser();
+            .getCurrentUser() as CognitoUser;
 
         let self = this;
 
@@ -128,10 +132,22 @@ export class AWSCognitoWrapper extends React.Component < AWSCognitoWrapper.Props
 
                     self.setAwsCredentials(session.getIdToken().getJwtToken());
 
+                    if (self.props.returnUser) {
+                        self
+                            .props
+                            .returnUser(cognitoUser);
+                    }
+
                     if (self.props.returnAccessToken) {
                         self
                             .props
                             .returnAccessToken(session.getIdToken().getJwtToken());
+                    }
+
+                    if (self.props.returnUserSession) {
+                        self
+                            .props
+                            .returnUserSession(session);
                     }
 
                     if (cognitoUser !== null) {
