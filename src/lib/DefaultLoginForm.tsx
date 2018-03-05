@@ -54,6 +54,13 @@ export class DefaultLoginForm extends LoginForm <LoginForm.Props, DefaultLoginFo
             .loginHandler(this.state.username, this.state.password);
     }
 
+    forgotPassword(e: React.MouseEvent<HTMLAnchorElement>) {
+        e.preventDefault()
+        this
+            .props
+            .forgotPassword()
+    }
+
     render() {
         return (
             <div>
@@ -72,6 +79,7 @@ export class DefaultLoginForm extends LoginForm <LoginForm.Props, DefaultLoginFo
                         placeholder="Password"
                         onChange={this.handlePassword}/>
                     <input type="submit"/>
+                    <a onClick={this.forgotPassword}>Forgot password</a>
                 </form>
             </div>
         );
