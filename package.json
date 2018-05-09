@@ -1,6 +1,6 @@
 {
   "name": "@nitor/aws-react-components",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "description": "A library with React component for AWS",
   "main": "build/index.js",
   "typings": "build/index",
@@ -20,8 +20,6 @@
     "url": "git+https://github.com/NitorCreations/aws-react-components.git"
   },
   "dependencies": {
-    "@types/node": "^8.0.28",
-    "@types/react": "^16.3.14",
     "amazon-cognito-identity-js": "^1.19.0",
     "aws-sdk": "^2.6.0",
     "react": "^15.6.2",
@@ -32,6 +30,8 @@
   },
   "homepage": "https://github.com/NitorCreations/aws-react-components#readme",
   "devDependencies": {
+    "@types/node": "^8.0.28",
+    "@types/react": "^16.3.14",
     "typescript": "^2.8.3"
   }
 }
