@@ -18,8 +18,8 @@ export namespace DefaultResetPasswordForm {
 }
 
 export class DefaultResetPasswordForm extends ResetPasswordForm<ResetPasswordForm.Props, DefaultResetPasswordForm.State> {
-    constructor(){
-        super();
+    constructor(props: ResetPasswordForm.Props){
+        super(props);
 
         this.state = {
             password1: "",

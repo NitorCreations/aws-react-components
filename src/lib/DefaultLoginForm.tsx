@@ -20,8 +20,8 @@ const ErrorMessage = ({error}: {error?: string}) => {
 
 export class DefaultLoginForm extends LoginForm <LoginForm.Props, DefaultLoginForm.State> {
 
-    constructor() {
-        super();
+    constructor(props: LoginForm.Props) {
+        super(props);
 
         this.state = {
             username: "",
